@@ -31,13 +31,20 @@ namespace AuthDemoWinForms
                 //Windows Auth
                 WindowsIdentity current = WindowsIdentity.GetCurrent();
                 WindowsPrincipal windowsPrincipal = new WindowsPrincipal(current);
-                label1.Text = windowsPrincipal.Identity.Name;
+                labelCurrentWinUser.Text = windowsPrincipal.Identity.Name;
 
                 var authResult = await Login();
-                label4.Text = authResult.Account.Username;
+                if (authResult != null)
+                {
+                    labelADUserName.Text = authResult.Account.Username;
 
-                button1.Text = "Log Out";
-                loggeIn = true;
+                    button1.Text = "Log Out";
+                    loggeIn = true;
+                }
+                else
+                {
+
+                }
             }
             else
             {
@@ -74,12 +81,12 @@ namespace AuthDemoWinForms
                 }
                 catch (MsalException msalex)
                 {
-                    label1.Text = $"Error Acquiring Token:{System.Environment.NewLine}{msalex}";
+                    labelCurrentWinUser.Text = $"Error Acquiring Token:{System.Environment.NewLine}{msalex}";
                 }
             }
             catch (Exception ex)
             {
-                label1.Text = $"Error Acquiring Token Silently:{System.Environment.NewLine}{ex}";
+                labelCurrentWinUser.Text = $"Error Acquiring Token Silently:{System.Environment.NewLine}{ex}";
             }
             return authResult;
         }
@@ -93,8 +100,8 @@ namespace AuthDemoWinForms
                 try
                 {
                     await Program.PublicClientApp.RemoveAsync(accounts.FirstOrDefault());
-                    this.label1.Text = "User has signed-out";
-                    this.label4.Text = "User has signed-out";
+                    this.labelCurrentWinUser.Text = "User has signed-out";
+                    this.labelADUserName.Text = "User has signed-out";
                 }
                 catch (MsalException ex)
                 {
